@@ -1,0 +1,108 @@
+package com.transformation;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class RobotWarTest {
+
+	private final String OPTIMUS_PRIME = "Optimus Prime";
+	private final String PREDAKING = "Predaking";
+
+	@Test
+	public void testBattle() {
+
+		// three robots
+		List<Robot> robots = new ArrayList<Robot>() {
+			{
+				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+			}
+		};
+		War<Robot> war = new RobotWar(robots);
+		Optional<List<Integer>> results = war.battle();
+		assertTrue(results.map(List::size).orElse(0) == 1);
+		assertTrue(results.get().get(0) == 1);
+
+		// No robots
+		List<Robot> emptyRobots = new ArrayList<Robot>();
+		War<Robot> noWar = new RobotWar(emptyRobots);
+		Optional<List<Integer>> newResult = noWar.battle();
+		assertTrue(newResult.map(List::size).orElse(0) == 0);
+
+		// same ability robots
+		List<Robot> tieRobots = new ArrayList<Robot>() {
+			{
+				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				add(new Robot("Bluestreak", Team.A, 8, 9, 2, 6, 7, 5, 6, 10));
+			}
+		};
+		War<Robot> tieWar = new RobotWar(tieRobots);
+		Optional<List<Integer>> tieResult = tieWar.battle();
+		assertTrue(tieResult.map(List::size).orElse(0) == 1);
+		assertTrue(tieResult.get().get(0) == 7);
+
+		// optimus prime join battle
+		List<Robot> optinusTeam = new ArrayList<Robot>() {
+			{
+				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+				add(new Robot(OPTIMUS_PRIME, Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+			}
+		};
+		War<Robot> optimusPrimeWar = new RobotWar(optinusTeam);
+		Optional<List<Integer>> optimusResult = optimusPrimeWar.battle();
+		assertTrue(optimusResult.map(List::size).orElse(0) == 1);
+		assertTrue(optimusResult.get().get(0) == 3);
+
+		// predaking join robots
+		List<Robot> predakingTeam = new ArrayList<Robot>() {
+			{
+				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+				add(new Robot(PREDAKING, Team.D, 4, 4, 4, 4, 4, 4, 4, 4));
+			}
+		};
+		War<Robot> predakingWar = new RobotWar(predakingTeam);
+		Optional<List<Integer>> predakingResult = predakingWar.battle();
+		assertTrue(predakingResult.map(List::size).orElse(0) == 1);
+		assertTrue(predakingResult.get().get(0) == 4);
+		
+		// same team robots
+		List<Robot> sameTeam = new ArrayList<Robot>() {
+			{
+				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+			}
+		};
+		War<Robot> sameTeamWar = new RobotWar(sameTeam);
+		Optional<List<Integer>> sameTeamResult = sameTeamWar.battle();
+		assertTrue(sameTeamResult.map(List::size).orElse(0) == 0);
+		
+		// two battles
+				List<Robot> twoBattlesTeam = new ArrayList<Robot>() {
+					{
+						add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+						add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+						add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+						add(new Robot("Sideswipe", Team.D, 2, 2, 2, 2, 2, 2, 2, 2));
+					}
+				};
+				War<Robot> twoBattlsWar = new RobotWar(twoBattlesTeam);
+				Optional<List<Integer>> twoBattlesResult = twoBattlsWar.battle();
+				assertTrue(twoBattlesResult.map(List::size).orElse(0) == 2);
+				assertTrue(twoBattlesResult.get().get(0) == 1);
+				assertTrue(twoBattlesResult.get().get(1) == 0);
+				assertTrue(twoBattlsWar.getATeam().map(List::size).orElse(0) == 1);
+				assertTrue(twoBattlsWar.getBTeam().map(List::size).orElse(0) == 1);
+				
+
+	}
+	
+}
