@@ -1,11 +1,17 @@
 package com.transformation;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.Test;
+
+import com.transformation.Robot;
+import com.transformation.RobotWar;
+import com.transformation.Team;
+import com.transformation.War;
 
 public class RobotWarTest {
 
@@ -73,6 +79,21 @@ public class RobotWarTest {
 		Optional<List<Integer>> predakingResult = predakingWar.battle();
 		assertTrue(predakingResult.map(List::size).orElse(0) == 1);
 		assertTrue(predakingResult.get().get(0) == 4);
+		
+		
+		// optimus prime vs predaking 
+		List<Robot> predakingVsOptimusIn = new ArrayList<Robot>() {
+			{
+				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				add(new Robot(OPTIMUS_PRIME, Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
+				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
+				add(new Robot(PREDAKING, Team.D, 4, 4, 4, 4, 4, 4, 4, 4));
+			}
+		};
+		War<Robot> predakingVsOptimusWar = new RobotWar(predakingVsOptimusIn);
+		Optional<List<Integer>> predakingVsOptimusResult = predakingVsOptimusWar.battle();
+		assertTrue(predakingVsOptimusResult.map(List::size).orElse(0) == 1);
+		assertTrue(predakingVsOptimusResult.get().get(0) == 2);
 		
 		// same team robots
 		List<Robot> sameTeam = new ArrayList<Robot>() {
