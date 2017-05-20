@@ -19,7 +19,7 @@ public class RobotWar implements War<Robot> {
 
 	private List<Robot> autobotsTeam;
 	private List<Robot> decepticonsTeam;
-	
+
 	@Override
 	public Optional<List<Robot>> getATeam() {
 		return Optional.of(this.autobotsTeam);
@@ -49,25 +49,25 @@ public class RobotWar implements War<Robot> {
 	}
 
 	private static BiFunction<Robot, Robot, Integer> fightRule(BiPredicate<Robot, Robot> bp, Integer result) {
-		return (r1, r2) -> bp.test(r1, r2) ? result : 999;
+		return (r1, r2) -> bp.test(r1, r2) ? result : Result.PASS;
 	}
 
 	private static List<BiFunction<Robot, Robot, Integer>> fightRules = Arrays.asList(
-			fightRule((r1, r2) -> r1.getTeam().equals(r2.getTeam()), 5),
-			fightRule((r1, r2) -> r1.getTeam().equals(Team.D) || r2.getTeam().equals(Team.A), 6),
+			fightRule((r1, r2) -> r1.getTeam().equals(r2.getTeam()), Result.ERROR_SAME_TEAM),
+			fightRule((r1, r2) -> r1.getTeam().equals(Team.D) || r2.getTeam().equals(Team.A), Result.ERROR_WRONG_TEAM),
 			fightRule((r1, r2) -> r1.getName().equalsIgnoreCase(OPTIMUS_PRIME)
-					&& r2.getName().equalsIgnoreCase(PREDAKING), 2),
-			fightRule((r1, r2) -> r1.getName().equalsIgnoreCase(OPTIMUS_PRIME), 3),
-			fightRule((r1, r2) -> r2.getName().equalsIgnoreCase(PREDAKING), 4),
+					&& r2.getName().equalsIgnoreCase(PREDAKING), Result.BOTH_TEAM_DESTORIED),
+			fightRule((r1, r2) -> r1.getName().equalsIgnoreCase(OPTIMUS_PRIME), Result.OPIMUS_PRIME_WIN),
+			fightRule((r1, r2) -> r2.getName().equalsIgnoreCase(PREDAKING), Result.PREDAKING_WIN),
 			fightRule((r1, r2) -> r1.getCourage() - r2.getCourage() >= 4 && r1.getStrength() - r2.getStrength() >= 3,
-					0),
+					Result.AUTOBOTS_WIN),
 			fightRule((r1, r2) -> r2.getCourage() - r1.getCourage() >= 4 && r2.getStrength() - r1.getStrength() >= 3,
-					1),
-			fightRule((r1, r2) -> r1.getSkill() - r2.getSkill() >= 3, 0),
-			fightRule((r1, r2) -> r2.getSkill() - r1.getSkill() >= 3, 1),
-			fightRule((r1, r2) -> r1.overallRating() == r2.overallRating(), 7),
-			fightRule((r1, r2) -> r1.overallRating() > r2.overallRating(), 0),
-			fightRule((r1, r2) -> r2.overallRating() > r1.overallRating(), 1));
+					Result.DECEPTIONS_WIN),
+			fightRule((r1, r2) -> r1.getSkill() - r2.getSkill() >= 3, Result.AUTOBOTS_WIN),
+			fightRule((r1, r2) -> r2.getSkill() - r1.getSkill() >= 3, Result.DECEPTIONS_WIN),
+			fightRule((r1, r2) -> r1.overallRating() == r2.overallRating(), Result.TIE),
+			fightRule((r1, r2) -> r1.overallRating() > r2.overallRating(), Result.AUTOBOTS_WIN),
+			fightRule((r1, r2) -> r2.overallRating() > r1.overallRating(), Result.DECEPTIONS_WIN));
 
 	@Override
 	public Optional<List<Integer>> battle() {
@@ -86,14 +86,14 @@ public class RobotWar implements War<Robot> {
 			}).filter(value -> value != 999).findFirst().get();
 
 			results.add(battleResult);
-			System.out.printf("battle %d: %s(%s) vs %s(%s)!, %s\n", results.size(), autobot.getName(), autobot.getTeam(), deceticon.getName(), deceticon.getTeam(), Result.getMessage(battleResult));
-			
+			System.out.printf("battle %d: %s(%s) vs %s(%s)!, %s\n", results.size(), autobot.getName(),
+					autobot.getTeam(), deceticon.getName(), deceticon.getTeam(), Result.getMessage(battleResult));
 
-			if (battleResult == 0) {
+			if (battleResult == Result.AUTOBOTS_WIN) {
 				decepticonsIterator.remove();
-			} else if (battleResult == 1) {
+			} else if (battleResult == Result.DECEPTIONS_WIN) {
 				autobotsIterator.remove();
-			} else if (battleResult == 7) {
+			} else if (battleResult == Result.TIE) {
 				decepticonsIterator.remove();
 				autobotsIterator.remove();
 			} else {
@@ -111,15 +111,15 @@ public class RobotWar implements War<Robot> {
 				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
 				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
 				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
-				//add(new Robot("Scrapper", Team.D, 2, 3, 2, 2, 2, 2, 2, 2));
-				//add(new Robot(OPTIMUS_PRIME, Team.A, 4, 4, 4, 4, 4, 4, 4,
-				//4));
-				//add(new Robot(PREDAKING, Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
+				//add(new Robot("Scrapper", Team.D, 4, 4, 4, 4, 4, 4, 4, 4));
+				// add(new Robot(OPTIMUS_PRIME, Team.A, 4, 4, 4, 4, 4, 4, 4,
+				// 4));
+				// add(new Robot(PREDAKING, Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
 			}
 		};
 		robots.stream().forEach(System.out::println);
 		System.out.println();
-		
+
 		War<Robot> war = new RobotWar(robots);
 		int autobotsTeamBeforeBattle = war.getATeam().map(List::size).orElse(0);
 		int decepticonsTeamBeforeBattle = war.getBTeam().map(List::size).orElse(0);
@@ -128,8 +128,12 @@ public class RobotWar implements War<Robot> {
 
 		if (results.isPresent()) {
 			System.out.printf("Total %d battle(s).\n", results.get().size());
-			if (results.get().stream().filter(r -> r != 0 && r != 1 && r != 7).findAny().isPresent()) {
-				results.get().stream().filter(r -> r != 0 && r != 1 && r != 7).forEach(r -> System.out.println(Result.getMessage(r)));
+			if (results.get().stream()
+					.filter(r -> r != Result.AUTOBOTS_WIN && r != Result.DECEPTIONS_WIN && r != Result.TIE).findAny()
+					.isPresent()) {
+				results.get().stream()
+						.filter(r -> r != Result.AUTOBOTS_WIN && r != Result.DECEPTIONS_WIN && r != Result.TIE)
+						.forEach(r -> System.out.println(Result.getMessage(r)));
 			} else {
 				int autobotsTeamAfterBattle = war.getATeam().map(List::size).orElse(0);
 				int decepticonsTeamAfterBattle = war.getBTeam().map(List::size).orElse(0);
@@ -153,7 +157,7 @@ public class RobotWar implements War<Robot> {
 
 			}
 
-		}else{
+		} else {
 			System.out.println("No result is returned.");
 		}
 
