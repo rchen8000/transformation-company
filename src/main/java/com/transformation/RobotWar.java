@@ -83,7 +83,7 @@ public class RobotWar implements War<Robot> {
 			int battleResult = fightRules.stream().flatMap(bf -> {
 				Integer result = bf.apply(autobot, deceticon);
 				return Stream.of(result);
-			}).filter(value -> value != 999).findFirst().get();
+			}).filter(value -> value != Result.PASS).findFirst().get();
 
 			results.add(battleResult);
 			System.out.printf("battle %d: %s(%s) vs %s(%s)!, %s\n", results.size(), autobot.getName(),
