@@ -2,8 +2,10 @@ package com.transformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -17,7 +19,7 @@ public class RobotWar implements War<Robot> {
 
 	private List<Robot> autobotsTeam;
 	private List<Robot> decepticonsTeam;
-
+	
 	@Override
 	public Optional<List<Robot>> getATeam() {
 		return Optional.of(this.autobotsTeam);
@@ -110,7 +112,7 @@ public class RobotWar implements War<Robot> {
 				add(new Robot("Soundwave", Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
 				add(new Robot("Bluestreak", Team.A, 6, 6, 7, 9, 5, 2, 9, 7));
 				add(new Robot("Hubcap", Team.A, 4, 4, 4, 4, 4, 4, 4, 4));
-				add(new Robot("Scrapper", Team.D, 2, 3, 2, 2, 2, 2, 2, 2));
+				//add(new Robot("Scrapper", Team.D, 2, 3, 2, 2, 2, 2, 2, 2));
 				//add(new Robot(OPTIMUS_PRIME, Team.A, 4, 4, 4, 4, 4, 4, 4,
 				//4));
 				//add(new Robot(PREDAKING, Team.D, 8, 9, 2, 6, 7, 5, 6, 10));
