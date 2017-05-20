@@ -82,7 +82,6 @@ public class RobotWar implements War<Robot> {
 
 			int battleResult = fightRules.stream().flatMap(bf -> {
 				Integer result = bf.apply(autobot, deceticon);
-;
 				return Stream.of(result);
 			}).filter(value -> value != 999).findFirst().get();
 
