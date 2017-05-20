@@ -153,6 +153,8 @@ public class RobotWar implements War<Robot> {
 
 			}
 
+		}else{
+			System.out.println("No result is returned.");
 		}
 
 	}
