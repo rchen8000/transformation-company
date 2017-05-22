@@ -19,5 +19,5 @@ order to the rule List.
 •	When battle starts, iterate all robots in two teams and go through all battle rules from the rule List. Then return the 
 all results of the battle.
 
-•	Analyze all the result and interpret the states to messages.
+•	Analyze all returned results and interpret the states to messages.
 
