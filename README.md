@@ -5,7 +5,7 @@ Solution:
 
 •	Create Robot class to hold the information of the all robots.
 
-•	Create a War interface which can extend the war in different type of wars.
+•	Create a War interface which can extend the war in different type (e.g. Human, Alien) of wars.
 
 •	Create RobotWar class which implements the War interface to handle the war between robots.
 
