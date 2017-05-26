@@ -16,7 +16,7 @@ example):
 
 ● Speed
 
-Endurance
+● Endurance
 
 ● Rank
 
